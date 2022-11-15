@@ -25,12 +25,6 @@ const createImgElement = (imageToDisplay, container) => {
     container.append(imgElement);
 }
 
-const createUlElement = (container) => {
-    const ulElement = document.createElement('ul');
-    container.append(ulElement);
-}
-
-
 const displayMeals = async() => {
     const mealsData = await fetchMeals();
     const container = document.querySelector('#root');
@@ -42,7 +36,9 @@ const displayMeals = async() => {
         createPElement(mealData.strCategory, container);
         createPElement(mealData.strInstructions, container);
         createPElement(mealData.strTags, container);
-        createUlElement(container);
+
+        const ulElement = document.createElement('ul');
+        container.append(ulElement);
 
 
         for(let i = 1; i <= 20; i++) {
