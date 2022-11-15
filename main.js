@@ -7,6 +7,13 @@ const fetchMeals = async () => {
     return mealsData;
 }
 
+const fetchCategories = async () => {
+    const categoryResponse = await fetch('https://www.themealdb.com/api/json/v1/1/categories.php');
+    const categoryData = await categoryResponse.json();
+
+    return categoryData;
+}
+
 const createPElement = (textToDisplay, container) => {
     const pElement = document.createElement('p');
     pElement.textContent = textToDisplay;
@@ -26,32 +33,48 @@ const createImgElement = (imageToDisplay, container) => {
 }
 
 const displayMeals = async() => {
-    const mealsData = await fetchMeals();
     const container = document.querySelector('#root');
 
-    mealsData.meals.map((mealData) => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const page = urlParams.get('page');
+    
 
-        createH2Element(mealData.strMeal, container);
-        createImgElement(mealData.strMealThumb, container);
-        createPElement(mealData.strCategory, container);
-        createPElement(mealData.strInstructions, container);
-        createPElement(mealData.strTags, container);
+    if (page === "meals") {
+        const mealsData = await fetchMeals();
 
-        const ulElement = document.createElement('ul');
-        container.append(ulElement);
+        mealsData.meals.map((mealData) => {
 
-
-        for(let i = 1; i <= 20; i++) {
-
-            if (mealData["strIngredient" + i]) {
-                const liElement = document.createElement('li');
-                liElement.textContent = mealData["strIngredient" + i];
-                ulElement.append(liElement);
+            createH2Element(mealData.strMeal, container);
+            createImgElement(mealData.strMealThumb, container);
+            createPElement(mealData.strCategory, container);
+            createPElement(mealData.strInstructions, container);
+            createPElement(mealData.strTags, container);
+    
+            const ulElement = document.createElement('ul');
+            container.append(ulElement);
+    
+    
+            for(let i = 1; i <= 20; i++) {
+    
+                if (mealData["strIngredient" + i]) {
+                    const liElement = document.createElement('li');
+                    liElement.textContent = mealData["strIngredient" + i];
+                    ulElement.append(liElement);
+                }
+    
             }
+    
+        })
+    } else if(page === "categories") {
+        const categoriesData = await fetchCategories();
 
-        }
+        categoriesData.categories.map((categoryData) => {
+            createH2Element(categoryData.strCategory, container);
+        });
+    }
 
-    })
+    
 }
 
 
